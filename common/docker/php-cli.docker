@@ -1,0 +1,17 @@
+FROM php:7.3-cli
+
+RUN apt-get update && apt-get install -y libzip-dev libmcrypt-dev zlib1g-dev libpq-dev libpng-dev wget libxml2-dev \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-install bcmath exif gd pdo_pgsql pgsql
+
+RUN export CFLAGS="$PHP_CFLAGS" CPPFLAGS="$PHP_CPPFLAGS" LDFLAGS="$PHP_LDFLAGS" \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libmagickwand-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && pecl install imagick-3.4.3 \
+    && docker-php-ext-enable imagick
+
+RUN wget https://getcomposer.org/installer -O - -q | php -- --install-dir=/bin --filename=composer --quiet
+
+WORKDIR /var/www

@@ -26,7 +26,7 @@ class MaterialItemsModel extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['status'], 'default', 'value' => null],
+            [['status'], 'default', 'value' => 0],
             [['status'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];

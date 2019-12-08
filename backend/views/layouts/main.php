@@ -44,6 +44,8 @@ AppAsset::register($this);
     } else {
         $menuItems[] = ['label' => 'Prizes', 'url' => Url::to('/user-prizes')];
         $menuItems[] = ['label' => 'Material Items', 'url' => Url::to('/material-items')];
+        $menuItems[] = ['label' => 'Money Configuration', 'url' => Url::to('/money-configuration')];
+        $menuItems[] = ['label' => 'Bonus Points Configuration', 'url' => Url::to('/bonus-points-configuration')];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(

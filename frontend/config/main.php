@@ -6,6 +6,7 @@ use common\domain\prize\materialItem\Repository as MaterialItemRepository;
 use common\repository\BonusPointsDatabaseRepository;
 use common\repository\MaterialItemDatabaseRepository;
 use common\repository\MoneyDatabaseRepository;
+use common\service\PrizeAmountGenerator;
 use common\service\PrizeLoader;
 use common\service\RafflePrize;
 
@@ -24,6 +25,7 @@ return [
         'singletons' => [
             'RafflePrize' => ['class' => RafflePrize::class],
             'PrizeLoader' => ['class' => PrizeLoader::class],
+            'PrizeAmountGenerator' => ['class' => PrizeAmountGenerator::class],
             MoneyRepository::class => ['class' => MoneyDatabaseRepository::class],
             BonusPointsRepository::class => ['class' => BonusPointsDatabaseRepository::class],
             MaterialItemRepository::class => ['class' => MaterialItemDatabaseRepository::class],

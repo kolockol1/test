@@ -44,4 +44,9 @@ class BonusPointsConfiguration extends \yii\db\ActiveRecord
             'max_limit' => 'Max Limit',
         ];
     }
+
+    public static function getSingle(): ?self
+    {
+        return self::findOne(['id' => 1]);//todo change, now I don't have enough time((((
+    }
 }

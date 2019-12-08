@@ -2,7 +2,9 @@
 
 namespace common\service;
 
+use common\activeRecords\BonusPointsConfiguration;
 use common\activeRecords\MaterialItemsModel;
+use common\activeRecords\MoneyConfiguration;
 use common\domain\prize\bonusPoints\BonusPoints;
 use common\domain\prize\materialItem\MaterialItem;
 use common\domain\prize\materialItem\Repository as MaterialItemRepository;
@@ -14,6 +16,9 @@ use yii\web\IdentityInterface;
 
 class RafflePrize
 {
+    private const DEFAULT_MIN_POINTS_LIMIT_AMOUNT = 2;
+    private const DEFAULT_MAX_POINTS_LIMIT_AMOUNT = 100;
+
     /** @var MoneyRepository */
     private $moneyRepository;
 
@@ -23,14 +28,19 @@ class RafflePrize
     /** @var MaterialItemRepository */
     private $materialItemRepository;
 
+    /** @var PrizeAmountGenerator */
+    private $prizeAmountGenerator;
+
     public function __construct(
         MoneyRepository $moneyRepository,
         BonusPointsRepository $bonusPointsRepository,
-        MaterialItemRepository $materialItemRepository
+        MaterialItemRepository $materialItemRepository,
+        PrizeAmountGenerator $prizeAmountGenerator
     ) {
         $this->moneyRepository = $moneyRepository;
         $this->bonusPointsRepository = $bonusPointsRepository;
         $this->materialItemRepository = $materialItemRepository;
+        $this->prizeAmountGenerator = $prizeAmountGenerator;
     }
 
     /**
@@ -43,17 +53,32 @@ class RafflePrize
         $materialItemsModels = MaterialItemsModel::findAll(['status' => MaterialItemsModel::AVAILABLE_FOR_RAFFLING]);
         shuffle($materialItemsModels);
         $materialItemsModel = array_shift($materialItemsModels);
-
+        $moneyConfiguration = MoneyConfiguration::getSingle();
         $prizeType = random_int(1, 3);
+        $prize = null;
 
         if (Prize::MATERIAL_ITEM === $prizeType && null !== $materialItemsModel) {
             $prize = $this->materialItemRepository->createNew($identity, $materialItemsModel->getId());
-        } elseif (Prize::MONEY === $prizeType) {
-            $prize = $this->moneyRepository->createNew($identity, random_int(1, 20));
-        } else {
-            $prize = $this->bonusPointsRepository->createNew($identity, random_int(1, 200));
-        }
+        } elseif (Prize::MONEY === $prizeType && null !== $moneyConfiguration) {
+            $moneyAmount = $this->prizeAmountGenerator->generateMoneyAmount(
+                $moneyConfiguration->left_amount,
+                $moneyConfiguration->min_limit,
+                $moneyConfiguration->max_limit
+            );
 
+            if (0 !== $moneyAmount) {
+                $prize = $this->moneyRepository->createNew($identity, $moneyAmount);
+            }
+        }
+        if (null === $prize) {
+            $pointsConfiguration = BonusPointsConfiguration::getSingle();
+            $pointsAmount = $this->prizeAmountGenerator->generatePointsAmount(
+                $pointsConfiguration->min_limit ?? self::DEFAULT_MIN_POINTS_LIMIT_AMOUNT,
+                $pointsConfiguration->max_limit ?? self::DEFAULT_MAX_POINTS_LIMIT_AMOUNT
+            );
+
+            $prize = $this->bonusPointsRepository->createNew($identity, $pointsAmount);
+        }
         return $prize;
     }
 

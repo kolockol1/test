@@ -49,4 +49,9 @@ class MoneyConfiguration extends \yii\db\ActiveRecord
             'conversion_ratio' => 'Conversion Ratio',
         ];
     }
+
+    public static function getSingle(): ?self
+    {
+        return self::findOne(['id' => 1]); //todo change, now I don't have enough time((((
+    }
 }

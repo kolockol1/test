@@ -1,8 +1,9 @@
 <?php
 
-namespace common\service;
+namespace common\tests\service;
 
 
+use common\service\PrizeAmountGenerator;
 use PHPUnit\Framework\TestCase;
 
 class PrizeAmountGeneratorTest extends TestCase

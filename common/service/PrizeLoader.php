@@ -7,6 +7,7 @@ use common\domain\prize\bonusPoints\Repository as BonusPointsRepository;
 use common\domain\prize\materialItem\Repository as MaterialItemRepository;
 use common\domain\prize\money\Repository as MoneyRepository;
 use common\domain\prize\Prize;
+use common\domain\prize\Statuses;
 use yii\web\IdentityInterface;
 
 class PrizeLoader
@@ -38,7 +39,15 @@ class PrizeLoader
     public function loadAll(IdentityInterface $identity): iterable
     {
         $prizes = [];
-        $models = UserPrizesModel::findAll(['user_id' => $identity->getId(), 'prize_status' => [1, 3]]);
+        $models = UserPrizesModel::findAll(
+            [
+                'user_id' => $identity->getId(),
+                'prize_status' => [
+                    Statuses::APPLIED,
+                    Statuses::CONVERTED_TO_POINTS,
+                ]
+            ]
+        );
 
         foreach ($models as $model) {
             switch ($model->prize_type) { //todo this is awful, do something

@@ -7,6 +7,7 @@ use common\repository\BonusPointsDatabaseRepository;
 use common\repository\MaterialItemDatabaseRepository;
 use common\repository\MoneyDatabaseRepository;
 use common\service\PrizeAmountGenerator;
+use common\service\PrizeConverter;
 use common\service\PrizeLoader;
 use common\service\RafflePrize;
 
@@ -26,6 +27,7 @@ return [
             'RafflePrize' => ['class' => RafflePrize::class],
             'PrizeLoader' => ['class' => PrizeLoader::class],
             'PrizeAmountGenerator' => ['class' => PrizeAmountGenerator::class],
+            'PrizeConverter' => ['class' => PrizeConverter::class],
             MoneyRepository::class => ['class' => MoneyDatabaseRepository::class],
             BonusPointsRepository::class => ['class' => BonusPointsDatabaseRepository::class],
             MaterialItemRepository::class => ['class' => MaterialItemDatabaseRepository::class],

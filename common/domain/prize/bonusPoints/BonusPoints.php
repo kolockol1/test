@@ -121,6 +121,11 @@ class BonusPoints implements Prize
         return $this->id;
     }
 
+    public static function convertFromMoneyType(IdentityInterface $identity, float $newAmount, int $id): self
+    {
+        return new self($identity, $newAmount, $id, Statuses::CONVERTED_TO_POINTS);
+    }
+
     private function checkStatus(): void
     {
         if (Statuses::UNDEFINED !== $this->status) {

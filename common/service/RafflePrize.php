@@ -30,17 +30,30 @@ class RafflePrize
 
     /** @var PrizeAmountGenerator */
     private $prizeAmountGenerator;
+    /**
+     * @var PrizeConverter
+     */
+    private $prizeConverter;
 
+    /**
+     * @param MoneyRepository $moneyRepository
+     * @param BonusPointsRepository $bonusPointsRepository
+     * @param MaterialItemRepository $materialItemRepository
+     * @param PrizeAmountGenerator $prizeAmountGenerator
+     * @param PrizeConverter $prizeConverter
+     */
     public function __construct(
         MoneyRepository $moneyRepository,
         BonusPointsRepository $bonusPointsRepository,
         MaterialItemRepository $materialItemRepository,
-        PrizeAmountGenerator $prizeAmountGenerator
+        PrizeAmountGenerator $prizeAmountGenerator,
+        PrizeConverter $prizeConverter
     ) {
         $this->moneyRepository = $moneyRepository;
         $this->bonusPointsRepository = $bonusPointsRepository;
         $this->materialItemRepository = $materialItemRepository;
         $this->prizeAmountGenerator = $prizeAmountGenerator;
+        $this->prizeConverter = $prizeConverter;
     }
 
     /**
@@ -117,6 +130,15 @@ class RafflePrize
 
         $repository = $this->getRepository($prize);
         $repository->save($prize);
+    }
+
+    public function convert(IdentityInterface $identity, int $prizeId): void
+    {
+        $prize = $this->getPrizeFromAny($identity, $prizeId);
+        $convertedPrize = $this->prizeConverter->convert($identity, $prize, MoneyConfiguration::getSingle());
+
+        $repository = $this->getRepository($convertedPrize);
+        $repository->save($convertedPrize);
     }
 
     /**

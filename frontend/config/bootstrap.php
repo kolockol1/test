@@ -4,6 +4,7 @@ use common\repository\BonusPointsDatabaseRepository;
 use common\repository\MaterialItemDatabaseRepository;
 use common\repository\MoneyDatabaseRepository;
 use common\service\PrizeAmountGenerator;
+use common\service\PrizeConverter;
 use common\service\PrizeLoader;
 use common\service\RafflePrize;
 use yii\base\BootstrapInterface;
@@ -19,6 +20,7 @@ class bootstrap implements BootstrapInterface
         $container->set('RafflePrize', RafflePrize::class);
         $container->set('PrizeLoader', PrizeLoader::class);
         $container->set('PrizeAmountGenerator', PrizeAmountGenerator::class);
+        $container->set('PrizeConverter', PrizeConverter::class);
         $container->set(MoneyRepository::class, MoneyDatabaseRepository::class);
         $container->set(BonusPointsRepository::class, BonusPointsDatabaseRepository::class);
         $container->set(MaterialItemRepository::class, MaterialItemDatabaseRepository::class);

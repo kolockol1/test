@@ -54,4 +54,12 @@ class MoneyConfiguration extends \yii\db\ActiveRecord
     {
         return self::findOne(['id' => 1]); //todo change, now I don't have enough time((((
     }
+
+    /**
+     * @return float
+     */
+    public function getConversionRatio(): float
+    {
+        return $this->conversion_ratio;
+    }
 }

@@ -3,6 +3,7 @@ namespace frontend\controllers;
 
 use common\service\PrizeLoader;
 use common\service\RafflePrize;
+use http\Url;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 
@@ -35,6 +36,14 @@ class PrizeController extends Controller
         /** @var RafflePrize $rafflePrize */
         $rafflePrize = \Yii::$container->get('RafflePrize');
         $rafflePrize->decline(\Yii::$app->getUser()->getIdentity(), $id);
+
+        return $this->redirect(['list']);
+    }
+
+    public function actionConvert(int $id) {
+        /** @var RafflePrize $rafflePrize */
+        $rafflePrize = \Yii::$container->get('RafflePrize');
+        $rafflePrize->convert(\Yii::$app->getUser()->getIdentity(), $id);
 
         return $this->redirect(['list']);
     }

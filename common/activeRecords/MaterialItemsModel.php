@@ -11,6 +11,10 @@ namespace common\activeRecords;
  */
 class MaterialItemsModel extends \yii\db\ActiveRecord
 {
+    public const AVAILABLE_FOR_RAFFLING = 0;
+    public const WAITING_FOR_SENDING = 1;
+    public const WAS_SENT = 2;
+
     /**
      * {@inheritdoc}
      */
@@ -26,7 +30,7 @@ class MaterialItemsModel extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['status'], 'default', 'value' => 0],
+            [['status'], 'default', 'value' => self::AVAILABLE_FOR_RAFFLING],
             [['status'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];

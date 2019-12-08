@@ -16,8 +16,9 @@ interface Repository
 
     /**
      * @param BonusPoints $bonusPoints
+     * @return int
      */
-    public function save(BonusPoints $bonusPoints): void;
+    public function save(BonusPoints $bonusPoints): int;
 
     /**
      * @param IdentityInterface $identity

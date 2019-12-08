@@ -11,38 +11,6 @@ use yii\web\IdentityInterface;
 
 class MaterialItemDatabaseRepository implements Repository
 {
-
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function getById(IdentityInterface $identity, int $id): Prize
-//    {
-//        $model = UserPrizesModel::findOne(['id' => $id, 'user_id' => $identity->getId()]);
-//
-//        if ($model === null) {
-//            throw new \RuntimeException('Not found prize model for user_id #' . $identity->getId() .
-//                ' and id #' . $id, ExceptionCodes::NOT_FOUND_PRIZE_MODEL);
-//        }
-//
-//        return Money::fromStorage($identity, $model);
-//    }
-//
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function save(Money $money): void
-//    {
-//        $model = $money->toStorage(new UserPrizesModel());
-//        $model->save();
-//    }
-//
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function createNew(IdentityInterface $identity, int $amount): Money
-//    {
-//        return Money::generateNewInstance($identity, $amount);
-//    }
     /**
      * @inheritDoc
      */
@@ -55,19 +23,24 @@ class MaterialItemDatabaseRepository implements Repository
                 ' and id #' . $id, ExceptionCodes::NOT_FOUND_PRIZE_MODEL);
         }
 
-        return MaterialItem::fromStorage($identity, $model);
+        return MaterialItem::fromStorage($identity, $model, MaterialItemsModel::findOne(['id' => $model->material_item_id]));
     }
 
     /**
      * @inheritDoc
      */
-    public function save(MaterialItem $materialItem): void
+    public function save(MaterialItem $materialItem): int
     {
-        $userPrizesModel = $materialItem->toStorage(new UserPrizesModel());
+        if (null !== $materialItem->getId()) {
+            $userPrizesModel = UserPrizesModel::findOne(['id' => $materialItem->getId()]);
+        }
+        $userPrizesModel = $materialItem->toStorage($userPrizesModel ?? new UserPrizesModel());
         $userPrizesModel->save();
 
-        $materialItemModel = $materialItem->materialItemToStorage(new MaterialItemsModel());
+        $materialItemModel = $materialItem->materialItemToStorage(MaterialItemsModel::findOne(['id' => $userPrizesModel->material_item_id]));
         $materialItemModel->save();
+
+        return $userPrizesModel->getId();
     }
 
     /**
@@ -75,7 +48,7 @@ class MaterialItemDatabaseRepository implements Repository
      */
     public function createNew(IdentityInterface $identity, int $materialItemId): MaterialItem
     {
-        $materialItemModel = MaterialItemsModel::findOne(['id' => $materialItemId]);
+        $materialItemModel = MaterialItemsModel::findOne(['id' => $materialItemId, 'status' => MaterialItemsModel::AVAILABLE_FOR_RAFFLING]);
 
         if (null === $materialItemModel) {
             throw new \RuntimeException('Not found material item model for user_id #' . $identity->getId() .

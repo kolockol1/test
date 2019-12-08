@@ -7,6 +7,10 @@ use yii\web\IdentityInterface;
 
 interface Prize
 {
+    public const MONEY = 1;
+    public const BONUS_POINTS = 2;
+    public const MATERIAL_ITEM = 3;
+
     public function apply(): void;
 
     public function decline(): void;

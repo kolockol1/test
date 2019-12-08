@@ -5,13 +5,14 @@ namespace common\domain\prize\materialItem;
 use common\activeRecords\MaterialItemsModel;
 use common\activeRecords\UserPrizesModel;
 use common\domain\prize\Prize;
+use common\domain\prize\Statuses;
 use common\exception\ExceptionCodes;
 use yii\web\IdentityInterface;
 
 class MaterialItem implements Prize
 {
     private const MATERIAL_ITEM_AMOUNT = 1;
-    private const TYPE_ID = 3;
+    private const TYPE_ID = Prize::MATERIAL_ITEM;
 
     /** @var IdentityInterface */
     private $identity;
@@ -25,16 +26,26 @@ class MaterialItem implements Prize
     /** @var int */
     private $id;
 
+    /** @var int */
+    private $status;
+
+    /** @var int */
+    private $materialItemStatus;
+
     private function __construct(
         IdentityInterface $identity,
         ?int $id,
         int $materialItemId,
-        string $materialItemName
+        string $materialItemName,
+        int $status = Statuses::UNDEFINED,
+        int $materialItemStatus = MaterialItemsModel::AVAILABLE_FOR_RAFFLING
     ) {
         $this->identity = $identity;
         $this->id = $id;
         $this->materialItemId = $materialItemId;
         $this->materialItemName = $materialItemName;
+        $this->status = $status;
+        $this->materialItemStatus = $materialItemStatus;
     }
 
     /**
@@ -42,7 +53,8 @@ class MaterialItem implements Prize
      */
     public function apply(): void
     {
-        // TODO: Implement apply() method.
+        $this->checkStatus();
+        $this->status = Statuses::APPLIED;
     }
 
     /**
@@ -50,7 +62,9 @@ class MaterialItem implements Prize
      */
     public function decline(): void
     {
-        // TODO: Implement decline() method.
+        $this->checkStatus();
+        $this->status = Statuses::DECLINED;
+        $this->materialItemStatus = 0;
     }
 
     /**
@@ -90,7 +104,7 @@ class MaterialItem implements Prize
             throw new \RuntimeException('For creating Material Item you have to send ' . MaterialItemsModel::class . ' model', ExceptionCodes::MATERIAL_ITEM_MODEL_MUST_BE_DEFINED);
         }
 
-        return new self($identity, $prizeModel->getId(), $materialItemModel->getId(), $materialItemModel->getName());
+        return new self($identity, $prizeModel->getId(), $materialItemModel->getId(), $materialItemModel->getName(), $prizeModel->getStatus(), $materialItemModel->status);
     }
 
     /**
@@ -99,9 +113,13 @@ class MaterialItem implements Prize
     public function toStorage(UserPrizesModel $record): UserPrizesModel
     {
         $record->prize_amount = self::MATERIAL_ITEM_AMOUNT;
-        $record->id = $this->id;
         $record->user_id = $this->identity->getId();
         $record->prize_type = self::TYPE_ID;
+        $record->material_item_id = $this->materialItemId;
+        $record->prize_status = $this->status;
+        if (null !== $this->id) {
+            $record->id = $this->id;
+        }
 
         return $record;
     }
@@ -110,7 +128,7 @@ class MaterialItem implements Prize
     {
         $record->id = $this->materialItemId;
         $record->name = $this->materialItemName;
-        $record->status = 0 === $record->status ? 1 : 2;//todo move move work with statuses to MaterialItemStatuses service
+        $record->status = $this->status === Statuses::APPLIED ? 1 : 0;
 
         return $record;
     }
@@ -122,18 +140,25 @@ class MaterialItem implements Prize
      */
     public static function generateNewInstance(IdentityInterface $identity, MaterialItemsModel $materialItemModel): self
     {
-        if (0 !== $materialItemModel->getStatus()) { //todo del 0 and move move work with statuses to MaterialItemStatuses service
+        if (MaterialItemsModel::AVAILABLE_FOR_RAFFLING !== $materialItemModel->getStatus()) {
             throw new \RuntimeException('Creating new instance available only for NEW ' . MaterialItemsModel::class, ExceptionCodes::INVALID_STATUS_OF_MATERIAL_ITEM_MODEL);
         }
 
-        return new self($identity, self::MATERIAL_ITEM_AMOUNT, $materialItemModel->getId(), $materialItemModel->getName());
+        return new self($identity, null, $materialItemModel->getId(), $materialItemModel->getName());
     }
 
     /**
      * @inheritDoc
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    private function checkStatus(): void
+    {
+        if (Statuses::UNDEFINED !== $this->status) {
+            throw new \RuntimeException('Model #' . $this->id . ' was processed before', ExceptionCodes::PRIZE_WAS_PROCESSED_BEFORE);
+        }
     }
 }

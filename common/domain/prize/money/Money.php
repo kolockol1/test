@@ -10,7 +10,7 @@ use yii\web\IdentityInterface;
 
 class Money implements Prize
 {
-    private const TYPE_ID = 1;
+    private const TYPE_ID = Prize::MONEY;
 
     /** @var IdentityInterface */
     private $identity;

@@ -9,6 +9,7 @@ namespace common\activeRecords;
  * @property int $prize_type
  * @property float $prize_amount
  * @property int $prize_status
+ * @property int $material_item_id
  */
 class UserPrizesModel extends \yii\db\ActiveRecord
 {
@@ -28,7 +29,7 @@ class UserPrizesModel extends \yii\db\ActiveRecord
         return [
             [['user_id', 'prize_type', 'prize_amount', 'prize_status'], 'required'],
             [['user_id', 'prize_type', 'prize_status'], 'default', 'value' => null],
-            [['user_id', 'prize_type', 'prize_status'], 'integer'],
+            [['user_id', 'prize_type', 'prize_status', 'material_item_id'], 'integer'],
             [['prize_amount'], 'number'],
         ];
     }
@@ -45,6 +46,7 @@ class UserPrizesModel extends \yii\db\ActiveRecord
             'prize_type' => 'Prize Type',
             'prize_amount' => 'Prize Amount',
             'prize_status' => 'Prize Status',
+            'material_item_id' => 'Material Item Id',
         ];
     }
 

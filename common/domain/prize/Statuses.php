@@ -8,5 +8,7 @@ class Statuses
     public const APPLIED = 1;
     public const DECLINED = 2;
     public const SENT_BY_POST = 3;
+    public const PAID = 4;
+    public const CONVERTED_TO_POINTS = 5;
 
 }

@@ -29,10 +29,16 @@ class BonusPointsDatabaseRepository implements Repository
     /**
      * @inheritDoc
      */
-    public function save(BonusPoints $bonusPoints): void
+    public function save(BonusPoints $bonusPoints): int
     {
-        $model = $bonusPoints->toStorage(new UserPrizesModel());
+        if (null !== $bonusPoints->getId()) {
+            $userPrizesModel = UserPrizesModel::findOne(['id' => $bonusPoints->getId()]);
+        }
+
+        $model = $bonusPoints->toStorage($userPrizesModel ?? new UserPrizesModel());
         $model->save();
+
+        return $model->getId();
     }
 
     /**

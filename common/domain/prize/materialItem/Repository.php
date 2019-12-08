@@ -16,13 +16,14 @@ interface Repository
 
     /**
      * @param MaterialItem $materialItem
+     * @return int
      */
-    public function save(MaterialItem $materialItem): void;
+    public function save(MaterialItem $materialItem): int;
 
     /**
      * @param IdentityInterface $identity
-     * @param int $amount
+     * @param int $materialItemId
      * @return MaterialItem
      */
-    public function createNew(IdentityInterface $identity, int $amount): MaterialItem;
+    public function createNew(IdentityInterface $identity, int $materialItemId): MaterialItem;
 }

@@ -4,12 +4,13 @@ namespace common\domain\prize\bonusPoints;
 
 use common\activeRecords\UserPrizesModel;
 use common\domain\prize\Prize;
+use common\domain\prize\Statuses;
 use common\exception\ExceptionCodes;
 use yii\web\IdentityInterface;
 
 class BonusPoints implements Prize
 {
-    private const TYPE_ID = 2;
+    private const TYPE_ID = Prize::BONUS_POINTS;
 
     /** @var IdentityInterface */
     private $identity;
@@ -20,11 +21,15 @@ class BonusPoints implements Prize
     /** @var int */
     private $id;
 
-    private function __construct(IdentityInterface $identity, int $amount, ?int $id)
+    /** @var int */
+    private $status;
+
+    private function __construct(IdentityInterface $identity, int $amount, ?int $id, int $status = Statuses::UNDEFINED)
     {
         $this->identity = $identity;
         $this->amount = $amount;
         $this->id = $id;
+        $this->status = $status;
     }
 
     /**
@@ -32,7 +37,8 @@ class BonusPoints implements Prize
      */
     public function apply(): void
     {
-        // TODO: Implement apply() method.
+        $this->checkStatus();
+        $this->status = Statuses::APPLIED;
     }
 
     /**
@@ -40,7 +46,8 @@ class BonusPoints implements Prize
      */
     public function decline(): void
     {
-        // TODO: Implement decline() method.
+        $this->checkStatus();
+        $this->status = Statuses::DECLINED;
     }
 
     /**
@@ -56,7 +63,7 @@ class BonusPoints implements Prize
      */
     public function getDescription(): string
     {
-        return 'Bonus points as prize';
+        return 'Bonus points as prize in quantity #' . $this->amount;
     }
 
     /**
@@ -86,9 +93,12 @@ class BonusPoints implements Prize
     public function toStorage(UserPrizesModel $record): UserPrizesModel
     {
         $record->prize_amount = $this->amount;
-        $record->id = $this->id;
         $record->user_id = $this->identity->getId();
         $record->prize_type = self::TYPE_ID;
+        $record->prize_status = $this->status;
+        if (null !== $this->id) {
+            $record->id = $this->id;
+        }
 
         return $record;
     }
@@ -106,8 +116,15 @@ class BonusPoints implements Prize
     /**
      * @inheritDoc
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    private function checkStatus(): void
+    {
+        if (Statuses::UNDEFINED !== $this->status) {
+            throw new \RuntimeException('Model #' . $this->id . ' was processed before', ExceptionCodes::PRIZE_WAS_PROCESSED_BEFORE);
+        }
     }
 }

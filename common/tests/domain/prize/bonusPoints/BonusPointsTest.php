@@ -56,7 +56,7 @@ class BonusPointsTest extends TestCase
      * @throws \DeepCopy\Exception\PropertyException
      * @throws \ReflectionException
      */
-    public function testSave(int $amount, ?int $id, int $expectedAmount, ?int $expectedId)
+    public function testFromStorage(int $amount, ?int $id, int $expectedAmount, ?int $expectedId)
     {
         $model = $model = $this->mockGenerator->userPrizesModel($amount, $id, 2);
 
@@ -68,7 +68,7 @@ class BonusPointsTest extends TestCase
         $this->assertEquals($expectedId, $reflectionProperty->getValue($prize));
     }
 
-    public function testSaveWithException()
+    public function testFromStorageWithException()
     {
         $model = $this->mockGenerator->userPrizesModel(1, 1, 1); //wrong type  for BonusPoints
 

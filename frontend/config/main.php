@@ -2,8 +2,11 @@
 
 use common\domain\prize\money\Repository as MoneyRepository;
 use common\domain\prize\bonusPoints\Repository as BonusPointsRepository;
+use common\domain\prize\materialItem\Repository as MaterialItemRepository;
 use common\repository\BonusPointsDatabaseRepository;
+use common\repository\MaterialItemDatabaseRepository;
 use common\repository\MoneyDatabaseRepository;
+use common\service\PrizeLoader;
 use common\service\RafflePrize;
 
 $params = array_merge(
@@ -20,8 +23,10 @@ return [
     'container' => [
         'singletons' => [
             'RafflePrize' => ['class' => RafflePrize::class],
+            'PrizeLoader' => ['class' => PrizeLoader::class],
             MoneyRepository::class => ['class' => MoneyDatabaseRepository::class],
             BonusPointsRepository::class => ['class' => BonusPointsDatabaseRepository::class],
+            MaterialItemRepository::class => ['class' => MaterialItemDatabaseRepository::class],
         ],
     ],
     'controllerNamespace' => 'frontend\controllers',

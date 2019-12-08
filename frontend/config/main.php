@@ -1,4 +1,11 @@
 <?php
+
+use common\domain\prize\money\Repository as MoneyRepository;
+use common\domain\prize\bonusPoints\Repository as BonusPointsRepository;
+use common\repository\BonusPointsDatabaseRepository;
+use common\repository\MoneyDatabaseRepository;
+use common\service\RafflePrize;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -10,6 +17,13 @@ return [
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'container' => [
+        'singletons' => [
+            'RafflePrize' => ['class' => RafflePrize::class],
+            MoneyRepository::class => ['class' => MoneyDatabaseRepository::class],
+            BonusPointsRepository::class => ['class' => BonusPointsDatabaseRepository::class],
+        ],
+    ],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [

@@ -16,8 +16,9 @@ interface Repository
 
     /**
      * @param Money $money
+     * @return int
      */
-    public function save(Money $money): void;
+    public function save(Money $money): int;
 
     /**
      * @param IdentityInterface $identity

@@ -128,4 +128,12 @@ class MaterialItem implements Prize
 
         return new self($identity, self::MATERIAL_ITEM_AMOUNT, $materialItemModel->getId(), $materialItemModel->getName());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 }

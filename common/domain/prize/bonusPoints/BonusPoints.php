@@ -102,4 +102,12 @@ class BonusPoints implements Prize
     {
         return new self($identity, $amount, null);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 }

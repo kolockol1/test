@@ -38,4 +38,9 @@ interface Prize
      * @return UserPrizesModel
      */
     public function toStorage(UserPrizesModel $model): UserPrizesModel;
+
+    /**
+     * @return int
+     */
+    public function getId(): ?int;
 }

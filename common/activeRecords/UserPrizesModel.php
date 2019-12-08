@@ -26,10 +26,9 @@ class UserPrizesModel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'date_create', 'prize_type', 'prize_amount', 'prize_status'], 'required'],
+            [['user_id', 'prize_type', 'prize_amount', 'prize_status'], 'required'],
             [['user_id', 'prize_type', 'prize_status'], 'default', 'value' => null],
             [['user_id', 'prize_type', 'prize_status'], 'integer'],
-            [['date_create'], 'safe'],
             [['prize_amount'], 'number'],
         ];
     }
@@ -62,5 +61,10 @@ class UserPrizesModel extends \yii\db\ActiveRecord
     public function getTypeId(): int
     {
         return $this->prize_type;
+    }
+
+    public function getStatus(): int
+    {
+        return $this->prize_status;
     }
 }

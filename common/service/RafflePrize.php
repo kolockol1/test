@@ -5,7 +5,7 @@ namespace common\service;
 use common\domain\prize\money\Money;
 use common\domain\prize\money\Repository as MoneyRepository;
 use common\domain\prize\Prize;
-use common\repository\BonusPointsDatabaseRepository;
+use common\domain\prize\bonusPoints\Repository as BonusPointsRepository;
 use yii\web\IdentityInterface;
 
 class RafflePrize
@@ -13,15 +13,15 @@ class RafflePrize
     /** @var MoneyRepository */
     private $moneyRepository;
 
-    /** @var BonusPointsDatabaseRepository */
-    private $bonusPointsDatabaseRepository;
+    /** @var BonusPointsRepository */
+    private $bonusPointsRepository;
 
     public function __construct(
         MoneyRepository $moneyRepository,
-        BonusPointsDatabaseRepository $bonusPointsDatabaseRepository
+        BonusPointsRepository $bonusPointsDatabaseRepository
     ) {
         $this->moneyRepository = $moneyRepository;
-        $this->bonusPointsDatabaseRepository = $bonusPointsDatabaseRepository;
+        $this->bonusPointsRepository = $bonusPointsDatabaseRepository;
     }
 
     /**
@@ -35,9 +35,37 @@ class RafflePrize
         return $this->moneyRepository->createNew($identity, random_int(1, 20));
     }
 
-    public function save(Money $prize): void
+    /**
+     * @param Money $prize
+     * @return int
+     */
+    public function save(Money $prize): int
     {
         //todo delete- this is only for test
+        return $this->moneyRepository->save($prize);
+    }
+
+    /**
+     * @param IdentityInterface $identity
+     * @param int $prizeId
+     */
+    public function apply(IdentityInterface $identity, int $prizeId): void
+    {
+        $prize = $this->moneyRepository->getById($identity, $prizeId);
+        $prize->apply();
+
+        $this->moneyRepository->save($prize);
+    }
+
+    /**
+     * @param IdentityInterface $identity
+     * @param int $prizeId
+     */
+    public function decline(IdentityInterface $identity, int $prizeId): void
+    {
+        $prize = $this->moneyRepository->getById($identity, $prizeId);
+        $prize->decline();
+
         $this->moneyRepository->save($prize);
     }
 }

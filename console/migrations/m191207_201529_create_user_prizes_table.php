@@ -15,7 +15,7 @@ class m191207_201529_create_user_prizes_table extends Migration
         $this->createTable('{{%user_prizes}}', [
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
-            'date_create' => $this->dateTime()->notNull(),
+            'date_create' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
             'prize_type' => $this->integer()->notNull(),
             'prize_amount' => $this->float()->notNull(),
             'prize_status' => $this->smallInteger()->notNull(),

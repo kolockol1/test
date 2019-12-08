@@ -29,10 +29,16 @@ class MoneyDatabaseRepository implements Repository
     /**
      * {@inheritdoc}
      */
-    public function save(Money $money): void
+    public function save(Money $money): int
     {
-        $model = $money->toStorage(new UserPrizesModel());
+        if (null !== $money->getId()) {
+            $userPrizesModel = UserPrizesModel::findOne(['id' => $money->getId()]);
+        }
+
+        $model = $money->toStorage($userPrizesModel ?? new UserPrizesModel());
         $model->save();
+
+        return $model->getId();
     }
 
     /**

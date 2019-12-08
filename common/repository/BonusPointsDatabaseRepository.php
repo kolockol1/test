@@ -36,7 +36,18 @@ class BonusPointsDatabaseRepository implements Repository
         }
 
         $model = $bonusPoints->toStorage($userPrizesModel ?? new UserPrizesModel());
-        $model->save();
+        $transaction = UserPrizesModel::getDb()->beginTransaction();
+        try {
+            $model->save();
+
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
 
         return $model->getId();
     }

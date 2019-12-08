@@ -44,7 +44,7 @@ class RafflePrize
         shuffle($materialItemsModels);
         $materialItemsModel = array_shift($materialItemsModels);
 
-        $prizeType = 3;//random_int(1, 3);
+        $prizeType = random_int(1, 3);
 
         if (Prize::MATERIAL_ITEM === $prizeType && null !== $materialItemsModel) {
             $prize = $this->materialItemRepository->createNew($identity, $materialItemsModel->getId());

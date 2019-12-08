@@ -35,10 +35,21 @@ class MaterialItemDatabaseRepository implements Repository
             $userPrizesModel = UserPrizesModel::findOne(['id' => $materialItem->getId()]);
         }
         $userPrizesModel = $materialItem->toStorage($userPrizesModel ?? new UserPrizesModel());
-        $userPrizesModel->save();
 
-        $materialItemModel = $materialItem->materialItemToStorage(MaterialItemsModel::findOne(['id' => $userPrizesModel->material_item_id]));
-        $materialItemModel->save();
+        $transaction = UserPrizesModel::getDb()->beginTransaction();
+        try {
+            $userPrizesModel->save();
+            $materialItemModel = $materialItem->materialItemToStorage(MaterialItemsModel::findOne(['id' => $userPrizesModel->material_item_id]));
+            $materialItemModel->save();
+
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
 
         return $userPrizesModel->getId();
     }

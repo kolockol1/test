@@ -5,6 +5,7 @@ namespace common\service;
 use common\domain\prize\money\Money;
 use common\domain\prize\money\Repository as MoneyRepository;
 use common\domain\prize\Prize;
+use common\repository\BonusPointsDatabaseRepository;
 use yii\web\IdentityInterface;
 
 class RafflePrize
@@ -12,9 +13,15 @@ class RafflePrize
     /** @var MoneyRepository */
     private $moneyRepository;
 
-    public function __construct(MoneyRepository $moneyRepository)
-    {
+    /** @var BonusPointsDatabaseRepository */
+    private $bonusPointsDatabaseRepository;
+
+    public function __construct(
+        MoneyRepository $moneyRepository,
+        BonusPointsDatabaseRepository $bonusPointsDatabaseRepository
+    ) {
         $this->moneyRepository = $moneyRepository;
+        $this->bonusPointsDatabaseRepository = $bonusPointsDatabaseRepository;
     }
 
     /**

@@ -2,17 +2,17 @@
 namespace common\repository;
 
 use common\activeRecords\UserPrizesModel;
-use common\domain\prize\money\Money;
-use common\domain\prize\money\Repository;
+use common\domain\prize\bonusPoints\BonusPoints;
+use common\domain\prize\bonusPoints\Repository;
 use common\domain\prize\Prize;
 use common\exception\ExceptionCodes;
 use yii\web\IdentityInterface;
 
-class MoneyDatabaseRepository implements Repository
+class BonusPointsDatabaseRepository implements Repository
 {
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getById(IdentityInterface $identity, int $id): Prize
     {
@@ -23,23 +23,23 @@ class MoneyDatabaseRepository implements Repository
                 ' and id #' . $id, ExceptionCodes::NOT_FOUND_PRIZE_MODEL);
         }
 
-        return Money::fromStorage($identity, $model);
+        return BonusPoints::fromStorage($identity, $model);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function save(Money $money): void
+    public function save(BonusPoints $bonusPoints): void
     {
-        $model = $money->toStorage(new UserPrizesModel());
+        $model = $bonusPoints->toStorage(new UserPrizesModel());
         $model->save();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
-    public function createNew(IdentityInterface $identity, int $amount): Money
+    public function createNew(IdentityInterface $identity, int $amount): BonusPoints
     {
-        return Money::generateNewInstance($identity, $amount);
+        return BonusPoints::generateNewInstance($identity, $amount);
     }
 }

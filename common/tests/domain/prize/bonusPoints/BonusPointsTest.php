@@ -1,8 +1,9 @@
 <?php
 
-namespace common\test\domain\prize\money;
+namespace common\test\domain\prize\bonusPoints;
 
 use common\activeRecords\UserPrizesModel;
+use common\domain\prize\bonusPoints\BonusPoints;
 use common\domain\prize\money\Money;
 use common\exception\ExceptionCodes;
 use common\models\User;
@@ -10,7 +11,7 @@ use common\test\MockGenerator;
 use DeepCopy\Reflection\ReflectionHelper;
 use PHPUnit\Framework\TestCase;
 
-class MoneyTest extends TestCase
+class BonusPointsTest extends TestCase
 {
     /**
      * @var User|\PHPUnit\Framework\MockObject\MockObject
@@ -57,9 +58,9 @@ class MoneyTest extends TestCase
      */
     public function testSave(int $amount, ?int $id, int $expectedAmount, ?int $expectedId)
     {
-        $model = $this->mockGenerator->userPrizesModel($amount, $id, 1);
+        $model = $model = $this->mockGenerator->userPrizesModel($amount, $id, 2);
 
-        $prize = Money::fromStorage($this->identity, $model);
+        $prize = BonusPoints::fromStorage($this->identity, $model);
 
         $this->assertEquals($expectedAmount, $prize->getAmount());
         $reflectionProperty = ReflectionHelper::getProperty($prize, 'id');
@@ -69,10 +70,10 @@ class MoneyTest extends TestCase
 
     public function testSaveWithException()
     {
-        $model = $this->mockGenerator->userPrizesModel(1, 1, 2); //wrong type  for Money
+        $model = $this->mockGenerator->userPrizesModel(1, 1, 1); //wrong type  for BonusPoints
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionCode(ExceptionCodes::INVALID_TYPE_FOR_PRIZE);
-        Money::fromStorage($this->identity, $model);
+        BonusPoints::fromStorage($this->identity, $model);
     }
 }

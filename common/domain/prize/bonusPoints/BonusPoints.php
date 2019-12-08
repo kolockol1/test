@@ -1,15 +1,15 @@
 <?php
 
-namespace common\domain\prize\money;
+namespace common\domain\prize\bonusPoints;
 
 use common\activeRecords\UserPrizesModel;
 use common\domain\prize\Prize;
 use common\exception\ExceptionCodes;
 use yii\web\IdentityInterface;
 
-class Money implements Prize
+class BonusPoints implements Prize
 {
-    private const TYPE_ID = 1;
+    private const TYPE_ID = 2;
 
     /** @var IdentityInterface */
     private $identity;
@@ -56,7 +56,7 @@ class Money implements Prize
      */
     public function getDescription(): string
     {
-        return 'Real money as prize';
+        return 'Bonus points as prize';
     }
 
     /**
@@ -74,7 +74,7 @@ class Money implements Prize
     public static function fromStorage(IdentityInterface $identity, UserPrizesModel $model): Prize
     {
         if (self::TYPE_ID !== $model->getTypeId()) {
-            throw new \RuntimeException('Type #' . $model->getTypeId() . 'is not supported by Money', ExceptionCodes::INVALID_TYPE_FOR_PRIZE);
+            throw new \RuntimeException('Type #' . $model->getTypeId() . 'is not supported by Bonus Points', ExceptionCodes::INVALID_TYPE_FOR_PRIZE);
         }
 
         return new self($identity, $model->getPrizeAmount(), $model->getId());

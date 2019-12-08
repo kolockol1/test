@@ -58,4 +58,9 @@ class UserPrizesModel extends \yii\db\ActiveRecord
     {
         return $this->id;
     }
+
+    public function getTypeId(): int
+    {
+        return $this->prize_type;
+    }
 }

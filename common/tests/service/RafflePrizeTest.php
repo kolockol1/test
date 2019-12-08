@@ -3,6 +3,7 @@
 namespace common\tests\service;
 
 use common\models\User;
+use common\repository\BonusPointsDatabaseRepository;
 use common\repository\MoneyDatabaseRepository;
 use common\service\RafflePrize;
 use PHPUnit\Framework\TestCase;
@@ -22,7 +23,7 @@ class RafflePrizeTest extends TestCase
 
     public function testGenerate()
     {
-        $rafflePrize = new RafflePrize(new MoneyDatabaseRepository());
+        $rafflePrize = new RafflePrize(new MoneyDatabaseRepository(), new BonusPointsDatabaseRepository());
         $prize = $rafflePrize->generate($this->identity);
         $this->assertTrue($prize->getAmount() >= 1 && $prize->getAmount() <= 20);
     }

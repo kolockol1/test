@@ -19,6 +19,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => [
                 'id',
                 'description',
+                [
+                    'attribute' => 'actionConvert',
+                    'value' => function ($model) {
+                        return $model['actionConvert'] ? Html::a('convert', $model['actionConvert']) : '';
+                    },
+                    'format' => 'raw',
+                ],
             ],
         ]
     ); ?>

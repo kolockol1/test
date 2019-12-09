@@ -1,9 +1,11 @@
 <?php
 namespace frontend\controllers;
 
+use common\domain\prize\money\Money;
 use common\service\PrizeLoader;
 use common\service\RafflePrize;
-use http\Url;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 
@@ -59,6 +61,7 @@ class PrizeController extends Controller
             $resultArray[] = [
                 'id' => $prize->getId(),
                 'description' => $prize->getDescription(),
+                'actionConvert' => $prize instanceof Money ? Url::to(['/prize/convert', 'id' => $prize->getId(),]) : '',
             ];
         }
 

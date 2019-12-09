@@ -5,9 +5,11 @@ namespace common\service;
 use common\activeRecords\UserPrizesModel;
 use common\domain\prize\bonusPoints\Repository as BonusPointsRepository;
 use common\domain\prize\materialItem\Repository as MaterialItemRepository;
+use common\domain\prize\money\Money;
 use common\domain\prize\money\Repository as MoneyRepository;
 use common\domain\prize\Prize;
 use common\domain\prize\Statuses;
+use common\models\User;
 use yii\web\IdentityInterface;
 
 class PrizeLoader
@@ -61,6 +63,26 @@ class PrizeLoader
                     $prizes[] = $this->materialItemRepository->getById($identity, $model->getId());
                     break;
             }
+        }
+
+        return $prizes;
+    }
+
+    /**
+     * @return Money[]
+     */
+    public function loadUnpaidMoney(): iterable
+    {
+        $prizes = [];
+        $models = UserPrizesModel::findAll(
+            [
+                'prize_type' => Prize::MONEY,
+                'prize_status' => Statuses::UNPAID,
+            ]
+        );
+
+        foreach ($models as $model) {
+            $prizes[] = $this->moneyRepository->getById(User::findOne(['id' => $model->user_id]), $model->getId());
         }
 
         return $prizes;

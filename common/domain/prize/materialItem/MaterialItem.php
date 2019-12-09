@@ -155,6 +155,11 @@ class MaterialItem implements Prize
         return $this->id;
     }
 
+    public function markAsSentByPost(): void
+    {
+        $this->status = Statuses::SENT_BY_POST;
+    }
+
     private function checkStatus(): void
     {
         if (Statuses::UNDEFINED !== $this->status) {

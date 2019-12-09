@@ -157,6 +157,19 @@ class RafflePrize
         $repository->save($prize);
     }
 
+    public function sendByPost(IdentityInterface $identity, int $prizeId): void
+    {
+        $prize = $this->getPrizeFromAny($identity, $prizeId);
+        if (false === $prize instanceof MaterialItem) {
+            throw new \RuntimeException('Unsupported type of Prize for sending by Post');
+        }
+
+        $prize->markAsSentByPost();
+
+        $repository = $this->getRepository($prize);
+        $repository->save($prize);
+    }
+
     /**
      * @param Prize $prize
      * @return BonusPointsRepository|MaterialItemRepository|MoneyRepository

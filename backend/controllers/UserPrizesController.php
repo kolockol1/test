@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use common\models\User;
+use common\service\RafflePrize;
 use Yii;
 use common\activeRecords\UserPrizesModel;
 use yii\data\ActiveDataProvider;
@@ -123,5 +125,15 @@ class UserPrizesController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionSendPost(int $id)
+    {
+        $model = $this->findModel($id);
+        /** @var RafflePrize $rafflePrize */
+        $rafflePrize = \Yii::$container->get('RafflePrize');
+        $rafflePrize->sendByPost(User::findOne(['id' => $model->user_id]), $id);
+
+        return $this->redirect(['index']);
     }
 }

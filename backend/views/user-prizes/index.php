@@ -28,9 +28,33 @@ $this->params['breadcrumbs'][] = $this->title;
             'date_create',
             'prize_type',
             'prize_amount',
-            //'prize_status',
+            'prize_status',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header' => 'Actions',
+                'headerOptions' => ['style' => 'color:#337ab7'],
+                'template' => '{view}{update}{send-post}',
+                'buttons' => [
+                    'view' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                            'title' => Yii::t('app', 'view'),
+                        ]);
+                    },
+
+                    'update' => function ($url, $model) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                            'title' => Yii::t('app', 'update'),
+                        ]);
+                    },
+                    'send-post' => function ($url, $model) {
+                        return \common\domain\prize\Prize::MATERIAL_ITEM === $model->prize_type ?
+                            Html::a('<span class="glyphicon glyphicon-star"></span>', $url, ['title' => Yii::t('app', 'send by post'),]) :
+                            '';
+                    }
+
+                ],
+            ],
         ],
     ]); ?>
 

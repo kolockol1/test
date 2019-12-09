@@ -6,6 +6,7 @@ use common\activeRecords\UserPrizesModel;
 use common\domain\prize\Prize;
 use common\domain\prize\Statuses;
 use common\exception\ExceptionCodes;
+use yii\helpers\Url;
 use yii\web\IdentityInterface;
 
 class Money implements Prize
@@ -71,8 +72,10 @@ class Money implements Prize
      */
     public function getSupportedActions(): iterable
     {
-        // TODO: Implement getSupportedActions() method.
-        return [];
+        return [
+            'actionConvert' => Url::to(['/prize/convert', 'id' => $this->id,]),
+            'actionWithdrawal' => Url::to(['/prize/withdrawal', 'id' => $this->id,]),
+        ];
     }
 
     /**
@@ -119,6 +122,16 @@ class Money implements Prize
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function markAsWithdrawn(): void
+    {
+        $this->status = Statuses::PAID;
+    }
+
+    public function markAsUnpaid(): void
+    {
+        $this->status = Statuses::UNPAID;
     }
 
     private function checkStatus(): void

@@ -50,6 +50,14 @@ class PrizeController extends Controller
         return $this->redirect(['list']);
     }
 
+    public function actionWithdrawal(int $id) {
+        /** @var RafflePrize $rafflePrize */
+        $rafflePrize = \Yii::$container->get('RafflePrize');
+        $rafflePrize->moneyWithdrawal(\Yii::$app->getUser()->getIdentity(), $id);
+
+        return $this->redirect(['list']);
+    }
+
     public function actionList()
     {
         /** @var PrizeLoader $prizeLoader */
@@ -58,10 +66,13 @@ class PrizeController extends Controller
         $resultArray = [];
 
         foreach ($prizes as $prize) {
+            $actions = $prize->getSupportedActions();
+
             $resultArray[] = [
                 'id' => $prize->getId(),
                 'description' => $prize->getDescription(),
-                'actionConvert' => $prize instanceof Money ? Url::to(['/prize/convert', 'id' => $prize->getId(),]) : '',
+                'actionConvert' => $actions['actionConvert'] ?? '',
+                'actionWithdrawal' => $actions['actionWithdrawal'] ?? '',
             ];
         }
 

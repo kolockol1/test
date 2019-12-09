@@ -3,6 +3,7 @@
 use common\repository\BonusPointsDatabaseRepository;
 use common\repository\MaterialItemDatabaseRepository;
 use common\repository\MoneyDatabaseRepository;
+use common\service\MoneyWithdrawal;
 use common\service\PrizeAmountGenerator;
 use common\service\PrizeConverter;
 use common\service\PrizeLoader;
@@ -21,6 +22,7 @@ class bootstrap implements BootstrapInterface
         $container->set('PrizeLoader', PrizeLoader::class);
         $container->set('PrizeAmountGenerator', PrizeAmountGenerator::class);
         $container->set('PrizeConverter', PrizeConverter::class);
+        $container->set('MoneyWithdrawal', MoneyWithdrawal::class);
         $container->set(MoneyRepository::class, MoneyDatabaseRepository::class);
         $container->set(BonusPointsRepository::class, BonusPointsDatabaseRepository::class);
         $container->set(MaterialItemRepository::class, MaterialItemDatabaseRepository::class);

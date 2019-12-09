@@ -26,6 +26,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'format' => 'raw',
                 ],
+                [
+                    'attribute' => 'actionWithdrawal',
+                    'value' => function ($model) {
+                        return $model['actionWithdrawal'] ? Html::a('withdrawal', $model['actionWithdrawal']) : '';
+                    },
+                    'format' => 'raw',
+                ],
             ],
         ]
     ); ?>
